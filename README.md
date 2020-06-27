@@ -1,3 +1,14 @@
+Configuration:
+
+Add to configuration.yaml:
+
+```
+cellar_tracker:
+  username:  !secret cellar_tracker_username
+  password:  !secret cellar_tracker_password
+```
+
+
 Sample Dashboard Config
 
 ```
