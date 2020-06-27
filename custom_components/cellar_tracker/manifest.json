@@ -2,7 +2,7 @@
   "domain": "cellar_tracker",
   "name": "Cellar Tracker",
   "documentation": "https://github.com/ahoernecke/ha_cellar_tracker",
-  "dependencies": ["cellartracker", "pandas", "numpy"],
+  "dependencies": ["git://github.com/mathroule/cellartracker", "pandas", "numpy"],
   "codeowners": ["@ahoernecke"],
   "requirements": []
 }
