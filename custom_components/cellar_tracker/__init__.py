@@ -18,9 +18,9 @@ from homeassistant.util import Throttle
 """Example Load Platform integration."""
 DOMAIN = 'cellar_tracker'
 
-SCAN_INTERVAL = timedelta(seconds=60)
+SCAN_INTERVAL = timedelta(seconds=3600)
 
-MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=60)
+MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=3600)
 
 _LOGGER = logging.getLogger(__name__)
 
