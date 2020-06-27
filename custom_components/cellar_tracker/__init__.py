@@ -40,21 +40,21 @@ CONFIG_SCHEMA = vol.Schema(
 def setup(hass, config):
     """Your controller/hub specific code."""
     # Data that you want to share with your platforms
-    _LOGGER.error(config)
+    
     conf = config[DOMAIN]
-    _LOGGER.error(conf)
+    
     username = conf[CONF_USERNAME]
     password = conf[CONF_PASSWORD]
     
 
-    _LOGGER.error("Here1")
+    
     hass.data[DOMAIN] = WineCellarData(username, password)
     hass.data[DOMAIN].update()
 
 
-    _LOGGER.error("Here2")
+    
     hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
-    _LOGGER.error("Here3")
+    
 
     return True
 
