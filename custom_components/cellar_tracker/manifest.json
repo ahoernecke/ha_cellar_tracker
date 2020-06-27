@@ -1,8 +1,8 @@
 {
-  "domain": "cellar_tracker_sensor",
-  "name": "Cellar Tracker Sensors",
-  "documentation": "https://github.com/home-assistant/example-custom-config/tree/master/custom_components/example_sensor/",
-  "dependencies": ["https://github.com/mathroule/cellartracker", "pandas", "numpy"],
+  "domain": "cellar_tracker",
+  "name": "Cellar Tracker",
+  "documentation": "https://github.com/ahoernecke/ha_cellar_tracker",
+  "dependencies": ["cellartracker", "pandas", "numpy"],
   "codeowners": ["@ahoernecke"],
   "requirements": []
 }
