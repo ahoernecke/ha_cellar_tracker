@@ -67,7 +67,7 @@ class WineCellarSensor(Entity):
 
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         if(self._sub_type):
             return self._data
 
