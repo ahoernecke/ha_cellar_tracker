@@ -14,7 +14,8 @@ cellar_tracker:
 ```
 
 
-Sample Dashboard Config
+Sample Dashboard Config:
+Go to Configuration -> Dashboards -> Add a new dashboard
 
 ```
 title: Home
