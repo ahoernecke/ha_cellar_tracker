@@ -88,7 +88,7 @@ class WineCellarSensor(Entity):
             return 0
 
         if(re.match(".+_value",self._sensor_type)):
-            return f"${round(self._state,2)}"
+            return f"{self.hass.config.currency}{round(self._state,2)}"
 
         return self._state
 
