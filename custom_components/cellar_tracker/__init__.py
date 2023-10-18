@@ -90,7 +90,7 @@ class WineCellarData:
       df = pd.DataFrame(list)
       df[["Price","Valuation"]] = df[["Price","Valuation"]].apply(pd.to_numeric)
 
-      groups = ['Varietal', 'Country', 'Vintage', 'Producer', 'Type']
+      groups = ['Varietal', 'Country', 'Vintage', 'Producer', 'Type', 'Location']
 
       for group in groups:
         group_data = df.groupby(group).agg({'iWine':'count','Valuation':['sum','mean']})
@@ -100,6 +100,8 @@ class WineCellarData:
         group_data.columns = ["count", "value_total", "value_avg", "%"]
         data[group] = {}
         for row, item in group_data.iterrows():
+          if row == "1001":
+            row = "NV"
           data[group][row] = item.to_dict()
           data[group][row]["sub_type"] = row
 
