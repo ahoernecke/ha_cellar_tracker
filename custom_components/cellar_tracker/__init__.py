@@ -100,6 +100,8 @@ class WineCellarData:
         group_data.columns = ["count", "value_total", "value_avg", "%"]
         data[group] = {}
         for row, item in group_data.iterrows():
+          if row == "1001":
+            row = "NV"
           data[group][row] = item.to_dict()
           data[group][row]["sub_type"] = row
 
