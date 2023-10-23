@@ -90,7 +90,7 @@ class WineCellarData:
       df = pd.DataFrame(list)
       df[["Price","Valuation"]] = df[["Price","Valuation"]].apply(pd.to_numeric)
 
-      groups = ['Varietal', 'Country', 'Vintage', 'Producer', 'Type', 'Location', 'Appellation']
+      groups = ['Varietal', 'Country', 'Vintage', 'Producer', 'Type', 'Location', 'Appellation', 'StoreName']
 
       for group in groups:
         group_data = df.groupby(group).agg({'iWine':'count','Valuation':['sum','mean']})
