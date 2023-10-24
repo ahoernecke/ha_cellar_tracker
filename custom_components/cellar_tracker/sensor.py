@@ -105,7 +105,7 @@ class WineCellarSensor(Entity):
 
         return "bottles"
 
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
+    #@Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
         """Fetch new state data for the sensor.
         This is the only method that should fetch new data for Home Assistant.

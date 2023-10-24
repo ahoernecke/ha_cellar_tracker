@@ -7,20 +7,13 @@ from random import seed
 from random import randint
 from datetime import timedelta
 
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, CONF_SCAN_INTERVAL
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 
-
-
-
 """Example Load Platform integration."""
 DOMAIN = 'cellar_tracker'
-
-SCAN_INTERVAL = timedelta(seconds=3600)
-
-MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=3600)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,47 +23,41 @@ CONFIG_SCHEMA = vol.Schema(
             {
                 vol.Required(CONF_USERNAME): cv.string,
                 vol.Required(CONF_PASSWORD): cv.string,
+                vol.Optional(CONF_SCAN_INTERVAL, default=3600): int
             }
         )
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-
 def setup(hass, config):
     """Your controller/hub specific code."""
     # Data that you want to share with your platforms
-    
+
     conf = config[DOMAIN]
-    
+
     username = conf[CONF_USERNAME]
     password = conf[CONF_PASSWORD]
-    
+    # Enforce a low limit of 30
+    scan_interval = timedelta(seconds=conf[CONF_SCAN_INTERVAL]) if conf[CONF_SCAN_INTERVAL] < 30 else timedelta(seconds=30)
 
-    
-    hass.data[DOMAIN] = WineCellarData(username, password)
+    hass.data[DOMAIN] = WineCellarData(username, password, scan_interval)
     hass.data[DOMAIN].update()
 
-
-    
     hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
-    
 
     return True
 
 class WineCellarData:
     """Get the latest data and update the states."""
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, scan_interval):
         """Init the Canary data object."""
 
-        # self._api = Api(username, password, timeout)
-
-        # self._locations_by_id = {}
-        # self._readings_by_device_id = {}
         self._username = username
         self._password = password
-        
+        _LOGGER.debug(f"Initiating with scan interval of {scan_interval}")
+        self.update = Throttle(scan_interval)(self._update)
 
     def get_reading(self, key):
       return self._data[key]
@@ -78,16 +65,15 @@ class WineCellarData:
     def get_readings(self):
       return self._data
 
-    @Throttle(MIN_TIME_BETWEEN_UPDATES)
-    def update(self, **kwargs):
+    def _update(self, **kwargs):
+      _LOGGER.debug("Updating cellar tracker data")
       data = {}
       username = self._username
       password = self._password
 
-
       client = cellartracker.CellarTracker(username, password)
-      list = client.get_inventory()
-      df = pd.DataFrame(list)
+      inventory = client.get_inventory()
+      df = pd.DataFrame(inventory)
       df[["Price","Valuation"]] = df[["Price","Valuation"]].apply(pd.to_numeric)
 
       groups = ['Varietal', 'Country', 'Vintage', 'Producer', 'Type', 'Location', 'Appellation', 'StoreName']
@@ -104,13 +90,11 @@ class WineCellarData:
             row = "NV"
           data[group][row] = item.to_dict()
           data[group][row]["sub_type"] = row
-
-
+          _LOGGER.debug(f"{group}::{data[group]}")
 
       data["total_bottles"] = len(df)
       data["total_value"] = df['Valuation'].sum()
       data["average_value"] = df['Valuation'].mean()
       self._data = data
-      
-
-    
+      for key in {"total_bottles", "total_value", "average_value"}:
+        _LOGGER.debug(f"{key}::{data[key]}")
