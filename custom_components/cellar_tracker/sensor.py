@@ -2,12 +2,13 @@
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 from datetime import timedelta
+import logging
 import time
 import pandas as pd
 import re
 from . import DOMAIN
 
-MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=30)
+_LOGGER = logging.getLogger(__name__)
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the sensor platform."""
@@ -106,7 +107,7 @@ class WineCellarSensor(Entity):
         """Fetch new state data for the sensor.
         This is the only method that should fetch new data for Home Assistant.
         """
-
+        _LOGGER.debug(f"Updating data for {self.name}")
         self.hass.data[DOMAIN].update()
         self._data = self.hass.data[DOMAIN].get_reading(self._sensor_type)
 
