@@ -64,12 +64,16 @@ class WineCellarData:
         self._password = password
         _LOGGER.debug(f"Initiating with scan interval of {scan_interval}")
         self.update = Throttle(scan_interval)(self._update)
+        self._scan_interval = scan_interval
 
     def get_reading(self, key):
       return self._data[key]
 
     def get_readings(self):
       return self._data
+
+    def get_scan_interval(self):
+      return self._scan_interval
 
     def _update(self, **kwargs):
       _LOGGER.debug("Updating cellar tracker data")

@@ -16,10 +16,10 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         return
 
     devs = []
-    
-    master_data = hass.data[DOMAIN].get_readings()
 
-    
+    master_data = hass.data[DOMAIN].get_readings()
+    scan_interval = hass.data[DOMAIN].get_scan_interval()
+
 
     for sensor_type in master_data.keys():
 
@@ -30,20 +30,18 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
                 value = data[key]
                 sensor_data = data.copy()
                 sensor_data[sensor_type] = key
-                
 
-                devs.append(WineCellarSensor(sensor_type, key, sensor_data))    
+                devs.append(WineCellarSensor(sensor_type, key, sensor_data, scan_interval))
         else:
-            devs.append(WineCellarSensor(sensor_type, None, data))
-        
+            devs.append(WineCellarSensor(sensor_type, None, data, scan_interval))
 
     add_entities(devs, True)
-    
+
 
 class WineCellarSensor(Entity):
     """Representation of a sensor."""
 
-    def __init__(self, sensor_type, sub_type, data):
+    def __init__(self, sensor_type, sub_type, data, scan_interval):
         """Initialize the sensor."""
 
         self._sensor_type = sensor_type
@@ -56,6 +54,7 @@ class WineCellarSensor(Entity):
         else:
             self._slug = None
         # self.update()
+        self.update = Throttle(scan_interval)(self._update)
 
     @property
     def name(self):
@@ -79,7 +78,6 @@ class WineCellarSensor(Entity):
             return "mdi:currency-usd"
 
         return "mdi:bottle-wine"
-    
 
     @property
     def state(self):
@@ -95,7 +93,6 @@ class WineCellarSensor(Entity):
     @property
     def unique_id(self):
         return "cellar_tracker." + self.name
-    
 
     @property
     def unit_of_measurement(self):
@@ -105,19 +102,16 @@ class WineCellarSensor(Entity):
 
         return "bottles"
 
-    #@Throttle(MIN_TIME_BETWEEN_UPDATES)
-    def update(self):
+    def _update(self):
         """Fetch new state data for the sensor.
         This is the only method that should fetch new data for Home Assistant.
         """
 
         self.hass.data[DOMAIN].update()
         self._data = self.hass.data[DOMAIN].get_reading(self._sensor_type)
-        
+
         if(self._sub_type):
             self._data = self._data[self._sub_type]
             self._state = self._data["count"]
         else:
             self._state = self._data
-
-        
