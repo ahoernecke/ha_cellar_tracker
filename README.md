@@ -45,6 +45,7 @@ Then go to `configuration.yaml` and add:
 cellar_tracker:
   username:  !secret cellar_tracker_username
   password:  !secret cellar_tracker_password
+  scan_interval: 600 [Optional: Defaults to 1 hour]
 ```
 
 # Dashboard visualization
@@ -153,5 +154,50 @@ columns:
     modify: parseFloat(x).toFixed(0)
 sort_by: count-
 ```
+
+**Bottles by Appellation**
+```
+type: custom:flex-table-card
+title: Bottles by Apellation
+entities:
+  include: sensor.cellar_tracker_appellation*
+columns:
+  - name: Country
+    data: sub_type
+  - name: Count
+    data: count
+  - name: Percentage
+    data: '%'
+    modify: parseFloat(x).toFixed(0)
+    suffix: '%'
+  - name: Average Value
+    data: value_avg
+    prefix: $
+    modify: parseFloat(x).toFixed(0)
+sort_by: count-
+```
+
+**Bottles by Place of Purchase**
+```
+type: custom:flex-table-card
+title: Bottles by Place of Purchase
+entities:
+  include: sensor.cellar_tracker_storename*
+columns:
+  - name: Country
+    data: sub_type
+  - name: Count
+    data: count
+  - name: Percentage
+    data: '%'
+    modify: parseFloat(x).toFixed(0)
+    suffix: '%'
+  - name: Average Value
+    data: value_avg
+    prefix: $
+    modify: parseFloat(x).toFixed(0)
+sort_by: count-
+```
+
 # Contribute
 Feel free to contribute by opening a PR, issue on this project
