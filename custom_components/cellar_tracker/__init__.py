@@ -31,22 +31,28 @@ CONFIG_SCHEMA = vol.Schema(
 )
 
 def setup(hass, config):
-    """Your controller/hub specific code."""
-    # Data that you want to share with your platforms
+   """Your controller/hub specific code."""
+   # Data that you want to share with your platforms
 
-    conf = config[DOMAIN]
+   conf = config[DOMAIN]
 
-    username = conf[CONF_USERNAME]
-    password = conf[CONF_PASSWORD]
-    # Enforce a low limit of 30
-    scan_interval = timedelta(seconds=conf[CONF_SCAN_INTERVAL]) if conf[CONF_SCAN_INTERVAL] < 30 else timedelta(seconds=30)
+   username = conf[CONF_USERNAME]
+   password = conf[CONF_PASSWORD]
+   # Enforce a low limit of 30
+   scan_interval_seconds = conf[CONF_SCAN_INTERVAL]
+   if scan_interval_seconds < 30:
+     _LOGGER.debug("Overriding scan interval to 30 due to low value of {scan_interval_seconds}")
+     scan_interval_seconds = 30
+   else:
+     _LOGGER.debug(f"Using configured scan_interval of {scan_interval_seconds}")
+   scan_interval = timedelta(seconds=scan_interval_seconds)
 
-    hass.data[DOMAIN] = WineCellarData(username, password, scan_interval)
-    hass.data[DOMAIN].update()
+   hass.data[DOMAIN] = WineCellarData(username, password, scan_interval)
+   hass.data[DOMAIN].update()
 
-    hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
+   hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
 
-    return True
+   return True
 
 class WineCellarData:
     """Get the latest data and update the states."""
@@ -90,11 +96,8 @@ class WineCellarData:
             row = "NV"
           data[group][row] = item.to_dict()
           data[group][row]["sub_type"] = row
-          _LOGGER.debug(f"{group}::{data[group]}")
 
       data["total_bottles"] = len(df)
       data["total_value"] = df['Valuation'].sum()
       data["average_value"] = df['Valuation'].mean()
       self._data = data
-      for key in {"total_bottles", "total_value", "average_value"}:
-        _LOGGER.debug(f"{key}::{data[key]}")
