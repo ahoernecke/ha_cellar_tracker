@@ -3,7 +3,7 @@
   "name": "Cellar Tracker",
   "documentation": "https://github.com/ahoernecke/ha_cellar_tracker",
   "dependencies": [],
-  "version": "20210413",
+  "version": "ffad6d8",
   "codeowners": ["@ahoernecke"],
   "requirements": ["cellartracker"]
 }
