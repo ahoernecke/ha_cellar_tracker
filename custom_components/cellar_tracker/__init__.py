@@ -11,7 +11,7 @@ from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
-
+from homeassistant.helpers import discovery as hdisco
 
 
 
@@ -53,9 +53,10 @@ def setup(hass, config):
 
 
     
-    hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
-    
+    #hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
+    hdisco.load_platform(hass, 'sensor', DOMAIN, {}, config)
 
+    
     return True
 
 class WineCellarData:
@@ -90,7 +91,7 @@ class WineCellarData:
       df = pd.DataFrame(list)
       df[["Price","Valuation"]] = df[["Price","Valuation"]].apply(pd.to_numeric)
 
-      groups = ['Varietal', 'Country', 'Vintage', 'Producer', 'Type', 'Location']
+      groups = ['Varietal', 'Country', 'Vintage', 'Producer', 'Type', 'Location', 'Bin', 'Size']
 
       for group in groups:
         group_data = df.groupby(group).agg({'iWine':'count','Valuation':['sum','mean']})
