@@ -11,7 +11,7 @@ from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
-
+from homeassistant.helpers import discovery as hdisco
 
 
 
@@ -53,9 +53,10 @@ def setup(hass, config):
 
 
     
-    hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
-    
+    #hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
+    hdisco.load_platform(hass, 'sensor', DOMAIN, {}, config)
 
+    
     return True
 
 class WineCellarData:
