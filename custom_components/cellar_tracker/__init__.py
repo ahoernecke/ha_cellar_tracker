@@ -11,6 +11,7 @@ from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, CONF_SCAN_INTERVAL
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
+from homeassistant.helpers import discovery as hdisco
 
 """Example Load Platform integration."""
 DOMAIN = 'cellar_tracker'
@@ -50,7 +51,7 @@ def setup(hass, config):
    hass.data[DOMAIN] = WineCellarData(username, password, scan_interval)
    hass.data[DOMAIN].update()
 
-   hass.helpers.discovery.load_platform('sensor', DOMAIN, {}, config)
+   hdisco.load_platform(hass, 'sensor', DOMAIN, {}, config)
 
    return True
 
