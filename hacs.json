@@ -4,4 +4,5 @@
   "domain": "cellar_tracker",
   "documentation": "https://github.com/ahoernecke/ha_cellar_tracker",
   "issue_tracker": "https://github.com/ahoernecke/ha_cellar_tracker/issues",
+  "content_in_root": "true
 }
