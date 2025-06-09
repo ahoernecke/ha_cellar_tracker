@@ -3,7 +3,8 @@
   "name": "Cellar Tracker",
   "documentation": "https://github.com/ahoernecke/ha_cellar_tracker",
   "dependencies": [],
-  "version": "20210413",
+  "version": "2025.06.19",
+  "iot_class: "cloud_polling",
   "codeowners": ["@ahoernecke"],
   "requirements": ["cellartracker"]
 }
